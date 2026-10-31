@@ -1,7 +1,7 @@
 package com.nurkiewicz.download
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
@@ -25,7 +25,10 @@ class ActuatorExposureSpec extends Specification {
 			mockMvc
 					.perform(get('/actuator/health'))
 					.andExpect(status().isOk())
-					.andExpect(content().json('{"status":"UP"}', true))
+					// Spring Boot 4 enables the liveness/readiness health groups by default,
+					// so the response lists them alongside the status. Strict comparison still
+					// asserts that no component details are leaked.
+					.andExpect(content().json('{"status":"UP","groups":["liveness","readiness"]}', true))
 	}
 
 	@Unroll
