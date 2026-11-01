@@ -81,7 +81,7 @@ public class ExistingFile {
 	}
 
 	private InputStreamResource resourceToReturn(FilePointer filePointer) {
-		if (method == HttpMethod.GET)
+		if (HttpMethod.GET.equals(method))
 			return buildResource(filePointer);
 		else
 			return null;
