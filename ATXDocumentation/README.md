@@ -50,9 +50,10 @@ Comprehensive static-analysis documentation for `com.nurkiewicz.download:downloa
 - [migration/validation-criteria.md](migration/validation-criteria.md) — Success criteria
 
 ### Specialized
-- [specialized/](specialized/) — HTTP caching semantics, throttling, logging and deployment specifics
-  - [specialized/http-api-examples.md](specialized/http-api-examples.md)
-  - [specialized/infrastructure-and-deployment.md](specialized/infrastructure-and-deployment.md)
+- [specialized/http-api-examples.md](specialized/http-api-examples.md) — HTTP request/response examples, caching and throttling semantics
+- [specialized/infrastructure-and-deployment.md](specialized/infrastructure-and-deployment.md) — Build/packaging, runtime configuration, profiles, logging, observability, capacity
+
+*Not applicable to this codebase (verified absent): database schemas, UI components, message queue/event patterns.*
 
 ## Component Index
 
