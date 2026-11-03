@@ -18,12 +18,12 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static org.apache.commons.io.FileUtils.ONE_MB;
 import static org.springframework.http.HttpStatus.*;
 
 public class ExistingFile {
 
 	private static final Logger log = LoggerFactory.getLogger(ExistingFile.class);
+	private static final long ONE_MB = 1024 * 1024;
 
 	private final HttpMethod method;
 	private final FilePointer filePointer;
@@ -114,8 +114,9 @@ public class ExistingFile {
 
 	private MediaType toMediaType(com.google.common.net.MediaType input) {
 		return input.charset()
-				.transform(c -> new MediaType(input.type(), input.subtype(), c))
-				.or(new MediaType(input.type(), input.subtype()));
+				.toJavaUtil()
+				.map(c -> new MediaType(input.type(), input.subtype(), c))
+				.orElseGet(() -> new MediaType(input.type(), input.subtype()));
 	}
 
 }
