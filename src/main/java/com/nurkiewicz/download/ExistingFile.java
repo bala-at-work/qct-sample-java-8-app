@@ -18,12 +18,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static org.apache.commons.io.FileUtils.ONE_MB;
 import static org.springframework.http.HttpStatus.*;
 
 public class ExistingFile {
 
 	private static final Logger log = LoggerFactory.getLogger(ExistingFile.class);
+
+	private static final long ONE_MB = 1024 * 1024;
 
 	private final HttpMethod method;
 	private final FilePointer filePointer;
@@ -81,7 +82,7 @@ public class ExistingFile {
 	}
 
 	private InputStreamResource resourceToReturn(FilePointer filePointer) {
-		if (method == HttpMethod.GET)
+		if (HttpMethod.GET.equals(method))
 			return buildResource(filePointer);
 		else
 			return null;
