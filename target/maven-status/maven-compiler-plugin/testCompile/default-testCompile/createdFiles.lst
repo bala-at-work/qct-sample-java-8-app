@@ -1,0 +1,10 @@
+com/nurkiewicz/download/DownloadControllerRedirectTest.class
+com/nurkiewicz/download/ExistingFileTest.class
+com/nurkiewicz/download/FileSystemStorageTest.class
+com/nurkiewicz/download/FileSystemPointerTest.class
+com/nurkiewicz/download/Sha512ShallowEtagHeaderFilterTest.class
+com/nurkiewicz/download/FileStorageStub.class
+com/nurkiewicz/download/FileExamples.class
+com/nurkiewicz/download/Sha512ShallowEtagHeaderFilter.class
+com/nurkiewicz/download/ActuatorExposureTest.class
+com/nurkiewicz/download/Sha512ShallowEtagHeaderFilterTest$1.class

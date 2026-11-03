@@ -1,0 +1,8 @@
+com/nurkiewicz/download/FileSystemPointer.class
+com/nurkiewicz/download/MainApplication.class
+com/nurkiewicz/download/ExistingFile.class
+com/nurkiewicz/download/FilePointer.class
+com/nurkiewicz/download/ThrottlingInputStream.class
+com/nurkiewicz/download/FileStorage.class
+com/nurkiewicz/download/FileSystemStorage.class
+com/nurkiewicz/download/DownloadController.class
