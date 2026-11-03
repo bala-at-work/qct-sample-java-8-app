@@ -1,3 +1,9 @@
+/home/devin/worker/qct-44c4/src/test/java/com/nurkiewicz/download/ActuatorExposureTest.java
+/home/devin/worker/qct-44c4/src/test/java/com/nurkiewicz/download/DownloadControllerRedirectTest.java
+/home/devin/worker/qct-44c4/src/test/java/com/nurkiewicz/download/ExistingFileTest.java
 /home/devin/worker/qct-44c4/src/test/java/com/nurkiewicz/download/FileExamples.java
 /home/devin/worker/qct-44c4/src/test/java/com/nurkiewicz/download/FileStorageStub.java
+/home/devin/worker/qct-44c4/src/test/java/com/nurkiewicz/download/FileSystemPointerTest.java
+/home/devin/worker/qct-44c4/src/test/java/com/nurkiewicz/download/FileSystemStorageTest.java
 /home/devin/worker/qct-44c4/src/test/java/com/nurkiewicz/download/Sha512ShallowEtagHeaderFilter.java
+/home/devin/worker/qct-44c4/src/test/java/com/nurkiewicz/download/Sha512ShallowEtagHeaderFilterTest.java
