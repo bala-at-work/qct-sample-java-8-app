@@ -1,0 +1,3 @@
+com/nurkiewicz/download/FileExamples.class
+com/nurkiewicz/download/Sha512ShallowEtagHeaderFilter.class
+com/nurkiewicz/download/FileStorageStub.class

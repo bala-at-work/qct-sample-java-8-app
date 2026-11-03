@@ -26,7 +26,8 @@ class DownloadControllerSpec extends Specification {
 
 	private MockMvc mockMvc
 
-	private static final String TEXT_FILE = '/download/' + FileExamples.TXT_FILE_UUID + '/file.txt';
+	// not final: Groovy 4 would inline it at compile time with a stale random UUID
+	private static String TEXT_FILE = '/download/' + FileExamples.TXT_FILE_UUID + '/file.txt'
 
 	@Autowired
 	public void setWebApplicationContext(WebApplicationContext wac) {
