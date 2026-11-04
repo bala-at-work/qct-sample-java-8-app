@@ -19,13 +19,13 @@ public class FileSystemPointer implements FilePointer {
 	public FileSystemPointer(File target) {
 		try {
 			this.target = target;
-			this.tag = Files.hash(target, Hashing.sha512());
+			this.tag = Files.asByteSource(target).hash(Hashing.sha512());
 			final String contentType = java.nio.file.Files.probeContentType(target.toPath());
 			this.mediaTypeOrNull = contentType != null ?
 					MediaType.parse(contentType) :
 					null;
 		} catch (IOException e) {
-			throw new IllegalArgumentException(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 
@@ -34,7 +34,7 @@ public class FileSystemPointer implements FilePointer {
 		try {
 			return new BufferedInputStream(new FileInputStream(target));
 		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 

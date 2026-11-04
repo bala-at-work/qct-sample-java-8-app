@@ -13,17 +13,18 @@ import org.springframework.http.ResponseEntity;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static org.apache.commons.io.FileUtils.ONE_MB;
 import static org.springframework.http.HttpStatus.*;
 
 public class ExistingFile {
 
 	private static final Logger log = LoggerFactory.getLogger(ExistingFile.class);
+
+	static final long ONE_MB = 1024L * 1024L;
 
 	private final HttpMethod method;
 	private final FilePointer filePointer;
@@ -35,28 +36,27 @@ public class ExistingFile {
 		this.uuid = uuid;
 	}
 
-	public ResponseEntity<Resource> redirect(Optional<String> requestEtagOpt, Optional<Date> ifModifiedSinceOpt) {
+	public ResponseEntity<Resource> redirect(Optional<String> requestEtagOpt, Optional<Instant> ifModifiedSinceOpt) {
 		return serveWithCaching(requestEtagOpt, ifModifiedSinceOpt, this::redirectDownload);
 	}
 
-	public ResponseEntity<Resource> handle(Optional<String> requestEtagOpt, Optional<Date> ifModifiedSinceOpt) {
+	public ResponseEntity<Resource> handle(Optional<String> requestEtagOpt, Optional<Instant> ifModifiedSinceOpt) {
 		return serveWithCaching(requestEtagOpt, ifModifiedSinceOpt, this::serveDownload);
 	}
 
 	private ResponseEntity<Resource> serveWithCaching(
-			Optional<String> requestEtagOpt, Optional<Date> ifModifiedSinceOpt,
+			Optional<String> requestEtagOpt, Optional<Instant> ifModifiedSinceOpt,
 			Function<FilePointer, ResponseEntity<Resource>> notCachedResponse) {
 		if (cached(requestEtagOpt, ifModifiedSinceOpt))
 			return notModified(filePointer);
 		return notCachedResponse.apply(filePointer);
 	}
 
-	private boolean cached(Optional<String> requestEtagOpt, Optional<Date> ifModifiedSinceOpt) {
+	private boolean cached(Optional<String> requestEtagOpt, Optional<Instant> ifModifiedSinceOpt) {
 		final boolean matchingEtag = requestEtagOpt
 				.map(filePointer::matchesEtag)
 				.orElse(false);
 		final boolean notModifiedSince = ifModifiedSinceOpt
-				.map(Date::toInstant)
 				.map(filePointer::modifiedAfter)
 				.orElse(false);
 		return matchingEtag || notModifiedSince;
@@ -81,7 +81,7 @@ public class ExistingFile {
 	}
 
 	private InputStreamResource resourceToReturn(FilePointer filePointer) {
-		if (method == HttpMethod.GET)
+		if (HttpMethod.GET.equals(method))
 			return buildResource(filePointer);
 		else
 			return null;
