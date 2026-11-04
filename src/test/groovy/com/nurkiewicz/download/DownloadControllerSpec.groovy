@@ -16,7 +16,10 @@ import java.time.format.DateTimeFormatter
 
 import static com.google.common.net.HttpHeaders.*
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 @WebAppConfiguration
@@ -28,6 +31,8 @@ class DownloadControllerSpec extends Specification {
 
 	// Not final: Groovy would inline the compile-time UUID instead of the runtime FileExamples value
 	private static String TEXT_FILE = '/download/' + FileExamples.TXT_FILE_UUID + '/file.txt';
+	private static String SHORT_URL = '/download/' + FileExamples.TXT_FILE_UUID;
+	private static final String FOOBAR_SHA512 = '0a50261ebd1a390fed2bf326f2673c145582a6342d523204973d0219337f81616a8069b012587cf5635f6925f1b56c360230c19b273500ee013e030601bf2425'
 
 	@Autowired
 	public void setWebApplicationContext(WebApplicationContext wac) {
@@ -167,6 +172,93 @@ class DownloadControllerSpec extends Specification {
 					status().isOk())
 					.andExpect(
 					header().string(CONTENT_TYPE, "text/plain"))
+	}
+
+	def 'should redirect short URL to canonical URL'() {
+		expect:
+			mockMvc
+					.perform(
+					get(SHORT_URL))
+					.andExpect(
+					status().isMovedPermanently())
+					.andExpect(
+					header().string(LOCATION, SHORT_URL + '/download.txt'))
+	}
+
+	def 'should redirect on HEAD of short URL'() {
+		expect:
+			mockMvc
+					.perform(
+					head(SHORT_URL))
+					.andExpect(
+					status().isMovedPermanently())
+					.andExpect(
+					header().string(LOCATION, SHORT_URL + '/download.txt'))
+					.andExpect(
+					content().bytes(new byte[0]))
+	}
+
+	def 'should return 304 on short URL when client cache valid'() {
+		expect:
+			mockMvc
+					.perform(
+					get(SHORT_URL)
+							.header(IF_NONE_MATCH, FileExamples.TXT_FILE.getEtag()))
+					.andExpect(
+					status().isNotModified())
+	}
+
+	def 'should return 404 on short URL for unknown UUID'() {
+		expect:
+			mockMvc
+					.perform(
+					get('/download/' + FileExamples.NOT_FOUND_UUID))
+					.andExpect(
+					status().isNotFound())
+	}
+
+	def 'should keep SHA-512 content ETag unchanged'() {
+		expect:
+			mockMvc
+					.perform(
+					head(TEXT_FILE))
+					.andExpect(
+					header().string(ETAG, '"' + FOOBAR_SHA512 + '"'))
+	}
+
+	def 'should reject malformed UUID'() {
+		expect:
+			mockMvc
+					.perform(
+					get(path))
+					.andExpect(
+					status().isBadRequest())
+		where:
+			path << ['/download/not-a-uuid', '/download/not-a-uuid/file.txt']
+	}
+
+	def 'should reject unmapped verb on #path'() {
+		expect:
+			mockMvc
+					.perform(request)
+					.andExpect(
+					status().isMethodNotAllowed())
+		where:
+			[path, request] << [[SHORT_URL, TEXT_FILE], [{ post(it) }, { put(it) }, { delete(it) }]]
+					.combinations()
+					.collect { p, builder -> [p, builder(p)] }
+	}
+
+	def 'should ignore unparseable If-Modified-Since'() {
+		expect:
+			mockMvc
+					.perform(
+					get(TEXT_FILE)
+							.header(IF_MODIFIED_SINCE, 'garbage'))
+					.andExpect(
+					status().isOk())
+					.andExpect(
+					content().string("foobar"))
 	}
 
 	private static String toDateHeader(Instant lastModified) {
